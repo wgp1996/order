@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.PayInfoMapper">
+    
+    <resultMap type="PayInfo" id="PayInfoResult">
+        <result property="id"    column="id"    />
+        <result property="djNumber"    column="dj_number"    />
+        <result property="djTime"    column="dj_time"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="djStatusName"    column="dj_status_name"    />
+    </resultMap>
+
+    <sql id="selectPayInfoVo">
+        select * from pay_info
+    </sql>
+    <sql id="selectPayInfoVoByRole">
+        select a.*,case a.status when 0 then '正操作' when 1 then '已生效' end as dj_status_name from pay_info a
+         join sys_user u on a.create_by=u.user_name
+        left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectPayInfoList" parameterType="PayInfo" resultMap="PayInfoResult">
+        <include refid="selectPayInfoVoByRole"/>
+        <where>  
+            <if test="djNumber != null  and djNumber != ''"> and dj_number = #{djNumber}</if>
+            <if test="djTime != null  and djTime != ''"> and dj_time = #{djTime}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="beginTime != null  and beginTime != ''"> and dj_time >= #{beginTime}</if>
+            <if test="endTime != null  and endTime != ''"> and dj_time &lt;= #{endTime}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            ${dataScope}
+        </where>
+        order by a.create_time desc
+    </select>
+    
+    <select id="selectPayInfoById" parameterType="Integer" resultMap="PayInfoResult">
+        <include refid="selectPayInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPayInfo" parameterType="PayInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into pay_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number,</if>
+            <if test="djTime != null  and djTime != ''">dj_time,</if>
+            <if test="status != null ">status,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="fileName != null  and fileName != ''">file_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">#{djNumber},</if>
+            <if test="djTime != null  and djTime != ''">#{djTime},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="fileName != null  and fileName != ''">#{fileName},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePayInfo" parameterType="PayInfo">
+        update pay_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number = #{djNumber},</if>
+            <if test="djTime != null  and djTime != ''">dj_time = #{djTime},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePayInfoById" parameterType="Integer">
+        delete from pay_info where id = #{id}
+    </delete>
+
+    <update id="updatePayInfoStatus" parameterType="String">
+        update pay_info set status='1'  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="cancelPayInfoStatus" parameterType="String">
+        update pay_info set status=0  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <delete id="deletePayInfoByIds" parameterType="String">
+        delete from pay_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.CgddInfoMapper">
+    
+    <resultMap type="CgddInfo" id="CgddInfoResult">
+        <result property="id"    column="id"    />
+        <result property="djNumber"    column="dj_number"    />
+        <result property="djTime"    column="dj_time"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="djStatusName"    column="dj_status_name"    />
+        <result property="orderCount"    column="order_count"    />
+        <result property="cgCount"    column="cg_count"    />
+        <result property="rkCount"    column="rk_count"    />
+        <result property="jhCount"    column="jh_count"    />
+    </resultMap>
+
+    <sql id="selectCgddInfoVo">
+        select id, dj_number, dj_time, status, create_by, create_time, update_by, update_time, remark, file_name from cgdd_info
+    </sql>
+    <sql id="selectCgddInfoVoByRole">
+        select a.*,case a.status when 0 then '正操作' when 1 then '已生效' end as dj_status_name from cgdd_info a
+        join sys_user u on a.create_by=u.user_name
+        left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectCgddInfoList" parameterType="CgddInfo" resultMap="CgddInfoResult">
+        <include refid="selectCgddInfoVoByRole"/>
+        <where>  
+            <if test="djNumber != null  and djNumber != ''"> and dj_number = #{djNumber}</if>
+            <if test="djTime != null  and djTime != ''"> and dj_time = #{djTime}</if>
+            <if test="beginTime != null  and beginTime != ''"> and dj_time >= #{beginTime}</if>
+            <if test="endTime != null  and endTime != ''"> and dj_time &lt;= #{endTime}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            ${dataScope}
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectIndexCount"  resultMap="CgddInfoResult">
+        select (select count(id) from cgdd_info) as order_count,
+        (select count(a.id) from cgdd_info_child a join cgdd_info b on a.dj_number=b.dj_number where b.`status`=1 and DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(cg_time,'%Y-%m-%d')) as cg_count,
+        (select count(a.id) from cgdd_info_child a join cgdd_info b on a.dj_number=b.dj_number where b.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d')) as jh_count,
+        (select count(a.id) from cgdd_info_child a join cgdd_info b on a.dj_number=b.dj_number where b.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(rk_time,'%Y-%m-%d')) as rk_count
+    </select>
+    
+    <select id="selectCgddInfoById" parameterType="Long" resultMap="CgddInfoResult">
+        <include refid="selectCgddInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCgddInfo" parameterType="CgddInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into cgdd_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number,</if>
+            <if test="djTime != null  and djTime != ''">dj_time,</if>
+            <if test="status != null ">status,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="fileName != null  and fileName != ''">file_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">#{djNumber},</if>
+            <if test="djTime != null  and djTime != ''">#{djTime},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="fileName != null  and fileName != ''">#{fileName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCgddInfo" parameterType="CgddInfo">
+        update cgdd_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number = #{djNumber},</if>
+            <if test="djTime != null  and djTime != ''">dj_time = #{djTime},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCgddInfoById" parameterType="Long">
+        delete from cgdd_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCgddInfoByIds" parameterType="String">
+        delete from cgdd_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="updateCgddInfoStatus" parameterType="String">
+        update cgdd_info set status='1'  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="cancleCgddInfoStatus" parameterType="String">
+        update cgdd_info set status=0  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="checkChildOrder" parameterType="String" resultType="Integer">
+       select count(a.id) from cgdd_info a join pay_info_child b on a.dj_number=b.order_number where a.dj_number=#{djNumber}
+    </select>
+</mapper>

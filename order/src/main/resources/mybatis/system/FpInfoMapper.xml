@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.FpInfoMapper">
+    
+    <resultMap type="FpInfo" id="FpInfoResult">
+        <result property="id"    column="id"    />
+        <result property="fpNumber"    column="fp_number"    />
+        <result property="fpAccount"    column="fp_account"    />
+        <result property="fpBank"    column="fp_bank"    />
+        <result property="fpRate"    column="fp_rate"    />
+        <result property="fpNum"    column="fp_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="khName"    column="kh_name"    />
+        <result property="khCode"    column="kh_code"    />
+    </resultMap>
+
+    <sql id="selectFpInfoVo">
+        select id, fp_number, fp_account, fp_bank, fp_rate, fp_num, create_by, create_time, update_by, update_time, remark, kh_name, kh_code from fp_info
+    </sql>
+    <sql id="selectFpInfoVoByRole">
+        select a.* from fp_info a
+         join sys_user u on a.create_by=u.user_name
+        left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectFpInfoList" parameterType="FpInfo" resultMap="FpInfoResult">
+        <include refid="selectFpInfoVoByRole"/>
+        <where>  
+            <if test="fpNumber != null  and fpNumber != ''"> and fp_number = #{fpNumber}</if>
+            <if test="fpAccount != null  and fpAccount != ''"> and fp_account = #{fpAccount}</if>
+            <if test="fpBank != null  and fpBank != ''"> and fp_bank = #{fpBank}</if>
+            <if test="fpRate != null  and fpRate != ''"> and fp_rate = #{fpRate}</if>
+            <if test="fpNum != null  and fpNum != ''"> and fp_num = #{fpNum}</if>
+            <if test="khName != null  and khName != ''"> and kh_name like concat('%', #{khName}, '%')</if>
+            <if test="khCode != null  and khCode != ''"> and kh_code = #{khCode}</if>
+            ${dataScope}
+        </where>
+    </select>
+    
+    <select id="selectFpInfoById" parameterType="Integer" resultMap="FpInfoResult">
+        <include refid="selectFpInfoVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectFpInfoByKh" parameterType="String" resultMap="FpInfoResult">
+        <include refid="selectFpInfoVo"/>
+        where kh_code = #{khCode}
+    </select>
+    <select id="selectFpInfoByKhName"  resultType="Integer">
+        select count(id) from fp_info
+        where kh_code = #{khCode}
+        <if test="id!=-1">
+            and id != #{id}
+        </if>
+    </select>
+
+
+    <insert id="insertFpInfo" parameterType="FpInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into fp_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fpNumber != null  and fpNumber != ''">fp_number,</if>
+            <if test="fpAccount != null  and fpAccount != ''">fp_account,</if>
+            <if test="fpBank != null  and fpBank != ''">fp_bank,</if>
+            <if test="fpRate != null  and fpRate != ''">fp_rate,</if>
+            <if test="fpNum != null  and fpNum != ''">fp_num,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="khName != null  and khName != ''">kh_name,</if>
+            <if test="khCode != null  and khCode != ''">kh_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fpNumber != null  and fpNumber != ''">#{fpNumber},</if>
+            <if test="fpAccount != null  and fpAccount != ''">#{fpAccount},</if>
+            <if test="fpBank != null  and fpBank != ''">#{fpBank},</if>
+            <if test="fpRate != null  and fpRate != ''">#{fpRate},</if>
+            <if test="fpNum != null  and fpNum != ''">#{fpNum},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="khName != null  and khName != ''">#{khName},</if>
+            <if test="khCode != null  and khCode != ''">#{khCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFpInfo" parameterType="FpInfo">
+        update fp_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fpNumber != null  and fpNumber != ''">fp_number = #{fpNumber},</if>
+            <if test="fpAccount != null  and fpAccount != ''">fp_account = #{fpAccount},</if>
+            <if test="fpBank != null  and fpBank != ''">fp_bank = #{fpBank},</if>
+            <if test="fpRate != null  and fpRate != ''">fp_rate = #{fpRate},</if>
+            <if test="fpNum != null  and fpNum != ''">fp_num = #{fpNum},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="khName != null  and khName != ''">kh_name = #{khName},</if>
+            <if test="khCode != null  and khCode != ''">kh_code = #{khCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFpInfoById" parameterType="Integer">
+        delete from fp_info where id = #{id}
+    </delete>
+
+    <delete id="deleteFpInfoByIds" parameterType="String">
+        delete from fp_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

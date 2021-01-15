@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.CgddInfoChildMapper">
+    
+    <resultMap type="CgddInfoChild" id="CgddInfoChildResult">
+        <result property="id"    column="id"    />
+        <result property="djNumber"    column="dj_number"    />
+        <result property="goodsCode"    column="goods_code"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsDw"    column="goods_dw"    />
+        <result property="goodsNum"    column="goods_num"    />
+        <result property="cgTime"    column="cg_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="goodsGg"    column="goods_gg"    />
+        <result property="goodsPrice"    column="goods_price"    />
+        <result property="goodsMoney"    column="goods_money"    />
+        <result property="khCode"    column="kh_code"    />
+        <result property="khName"    column="kh_name"    />
+        <result property="orderTime"    column="order_time"    />
+        <result property="rkTime"    column="rk_time"    />
+        <result property="jhTime"    column="jh_time"    />
+        <result property="shPersonName"    column="sh_person_name"    />
+        <result property="shPersonTel"    column="sh_person_tel"    />
+        <result property="status"    column="status"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="djTime"    column="dj_time"    />
+        <result property="fpTime"    column="fp_time"    />
+        <result property="fpNumber"    column="fp_number"    />
+        <result property="rkStatus"    column="rk_status"    />
+        <result property="shStatus"    column="sh_status"    />
+        <result property="djStatusName"    column="dj_status_name"    />
+        <result property="fpStatusName"    column="fp_status_name"    />
+        <result property="orderFpStatusName"    column="order_fp_status_name"    />
+        <result property="rkStatusName"    column="rk_status_name"    />
+        <result property="shStatusName"    column="sh_status_name"    />
+        <result property="orderDjTime"    column="order_dj_time"    />
+        <result property="personName"    column="person_name"    />
+
+    </resultMap>
+
+    <sql id="selectCgddInfoChildVo">
+        select * from cgdd_info_child
+    </sql>
+    <sql id="selectCgddInfoChildVoByRole">
+        select a.*,case a.status when 0 then '正操作' when 1 then '已生效' end as dj_status_name,
+        case a.rk_status when 0 then '未入库' when 1 then '已入库' end as rk_status_name,
+        case a.sh_status when 0 then '未交货' when 1 then '已交货' end as sh_status_name,
+         case ISNULL(a.fp_number) when 1 then '未开票' when 0 then '已开票' end  as fp_status_name
+        from cgdd_info_child a
+        join sys_user u on a.create_by=u.user_name
+        left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+    <select id="selectCgddInfoChildByNum" parameterType="String" resultMap="CgddInfoChildResult">
+        <include refid="selectCgddInfoChildVo"/>
+        where dj_number =#{dj_number}
+    </select>
+    <select id="selectCgddOrderList" parameterType="CgRkdSingleChild" resultMap="CgddInfoChildResult">
+        select a.* from cgdd_info_child a
+        <where>
+            <if test="djNumber != null  and djNumber != ''"> and a.dj_number = #{djNumber}</if>
+            <if test="createBy != null  and createBy != ''"> and a.create_by = #{createBy}</if>
+            <if test="djTime != null  and djTime != ''"> and a.cg_time = #{djTime}</if>
+            <if test="khName != null  and khName != ''"> and a.person_name like  concat('%', #{khName}, '%') </if>
+            and a.status=1 and a.id not in (select ifnull(order_id,'') from pay_info_child)
+            ${dataScope}
+        </where>
+        order by a.dj_number desc,a.create_time desc
+    </select>
+
+    <select id="selectCgddAllList" parameterType="CgRkdSingleChild" resultMap="CgddInfoChildResult">
+        select a.*,case a.status when 0 then '正操作' when 1 then '已生效' end as dj_status_name,
+        case a.rk_status when 0 then '未入库' when 1 then '已入库' end as rk_status_name,
+        case a.sh_status when 0 then '未交货' when 1 then '已交货' end as sh_status_name,
+        case ISNULL(a.fp_number) when 1 then '未开票' when 0 then '已开票' end  as fp_status_name,
+        case ISNULL(b.fp_number) when 1 then '未开票' when 0 then '已开票' end  as order_fp_status_name,
+        b.person_name,b.dj_time as order_dj_time
+        from cgdd_info_child a,cg_rkd_single b
+        <where>
+            a.order_number=b.dj_number
+            <if test="orderNumber != null  and orderNumber != ''"> and a.order_number like concat('%', #{orderNumber}, '%')</if>
+            <if test="personName != null  and personName != ''"> and b.person_name like concat('%', #{personName}, '%')</if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+
+    <select id="selectCgddMessageList" parameterType="Integer" resultMap="CgddInfoChildResult">
+        select a.*,case a.status when 0 then '正操作' when 1 then '已生效' end as dj_status_name,
+        case a.rk_status when 0 then '未入库' when 1 then '已入库' end as rk_status_name,
+        case a.sh_status when 0 then '未交货' when 1 then '已交货' end as sh_status_name,
+        case ISNULL(a.fp_number) when 1 then '未开票' when 0 then '已开票' end  as fp_status_name
+        from cgdd_info_child a
+        <where>
+            1=1
+            <if test="_parameter==1"> and a.`rk_status`=0 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(rk_time,'%Y-%m-%d') </if>
+            <if test="_parameter==2"> and a.`sh_status`=0 and a.`rk_status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d') </if>
+            <if test="_parameter==3"> and a.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')</if>
+            <if test="_parameter==0||_parameter==null"> and  1=2 </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+
+    <select id="selectCgddInfoChildList" parameterType="CgddInfoChild" resultMap="CgddInfoChildResult">
+        <include refid="selectCgddInfoChildVoByRole"/>
+        <where>
+            <if test="beginTime != null  and beginTime != ''"> and cg_time >= #{beginTime}</if>
+            <if test="endTime != null  and endTime != ''"> and cg_time &lt;= #{endTime}</if>
+            <if test="djNumber != null  and djNumber != ''"> and dj_number = #{djNumber}</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsDw != null  and goodsDw != ''"> and goods_dw = #{goodsDw}</if>
+            <if test="goodsNum != null  and goodsNum != ''"> and goods_num = #{goodsNum}</if>
+            <if test="cgTime != null  and cgTime != ''"> and cg_time = #{cgTime}</if>
+            <if test="goodsGg != null  and goodsGg != ''"> and goods_gg = #{goodsGg}</if>
+            <if test="goodsPrice != null  and goodsPrice != ''"> and goods_price = #{goodsPrice}</if>
+            <if test="goodsMoney != null  and goodsMoney != ''"> and goods_money = #{goodsMoney}</if>
+            <if test="khCode != null  and khCode != ''"> and kh_code = #{khCode}</if>
+            <if test="khName != null  and khName != ''"> and kh_name like concat('%', #{khName}, '%')</if>
+            <if test="orderTime != null  and orderTime != ''"> and order_time = #{orderTime}</if>
+            <if test="rkTime != null  and rkTime != ''"> and rk_time = #{rkTime}</if>
+            <if test="jhTime != null  and jhTime != ''"> and jh_time = #{jhTime}</if>
+            <if test="shPersonName != null  and shPersonName != ''"> and sh_person_name like concat('%', #{shPersonName}, '%')</if>
+            <if test="shPersonTel != null  and shPersonTel != ''"> and sh_person_tel = #{shPersonTel}</if>
+            <if test="fpNumber!=null  and fpNumber!='' and fpNumber==1"> and fp_number is not null </if>
+            <if test="fpNumber!=null  and fpNumber!='' and fpNumber==0"> and fp_number is null </if>
+            <if test="rkStatus!=null "> and rk_status = #{rkStatus} </if>
+            <if test="shStatus!=null "> and sh_status = #{shStatus}</if>
+
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number  like concat('%', #{orderNumber}, '%')</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            ${dataScope}
+        </where>
+        order by a.create_time desc
+    </select>
+    
+    <select id="selectCgddInfoChildById" parameterType="Long" resultMap="CgddInfoChildResult">
+        <include refid="selectCgddInfoChildVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="checkAllOrder" parameterType="String" resultType="Integer">
+       select
+        ((select count(id) from cg_rkd_single_child where dj_number=#{djNumber}) =
+        (select count(a.id) from cgdd_info_child a where EXISTS(select id from cg_rkd_single_child where dj_number=#{djNumber} and id=a.order_id) ))
+    </select>
+        
+    <insert id="insertCgddInfoChild" parameterType="CgddInfoChild">
+        insert into cgdd_info_child
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="djNumber != null  and djNumber != ''">dj_number,</if>
+            <if test="goodsCode != null  and goodsCode != ''">goods_code,</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name,</if>
+            <if test="goodsDw != null  and goodsDw != ''">goods_dw,</if>
+            <if test="goodsNum != null  and goodsNum != ''">goods_num,</if>
+            <if test="cgTime != null  and cgTime != ''">cg_time,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="goodsGg != null  and goodsGg != ''">goods_gg,</if>
+            <if test="goodsPrice != null  and goodsPrice != ''">goods_price,</if>
+            <if test="goodsMoney != null  and goodsMoney != ''">goods_money,</if>
+            <if test="khCode != null  and khCode != ''">kh_code,</if>
+            <if test="khName != null  and khName != ''">kh_name,</if>
+            <if test="orderTime != null  and orderTime != ''">order_time,</if>
+            <if test="rkTime != null  and rkTime != ''">rk_time,</if>
+            <if test="jhTime != null  and jhTime != ''">jh_time,</if>
+            <if test="shPersonName != null  and shPersonName != ''">sh_person_name,</if>
+            <if test="shPersonTel != null  and shPersonTel != ''">sh_person_tel,</if>
+            <if test="status != null ">status,</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
+            <if test="orderId != null  and orderId != ''">order_id,</if>
+            <if test="fpTime != null  and fpTime != ''">fp_time,</if>
+            <if test="fpNumber != null  and fpNumber != ''">fp_number,</if>
+            <if test="rkStatus != null">rk_status,</if>
+            <if test="shStatus != null ">sh_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="djNumber != null  and djNumber != ''">#{djNumber},</if>
+            <if test="goodsCode != null  and goodsCode != ''">#{goodsCode},</if>
+            <if test="goodsName != null  and goodsName != ''">#{goodsName},</if>
+            <if test="goodsDw != null  and goodsDw != ''">#{goodsDw},</if>
+            <if test="goodsNum != null  and goodsNum != ''">#{goodsNum},</if>
+            <if test="cgTime != null  and cgTime != ''">#{cgTime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="goodsGg != null  and goodsGg != ''">#{goodsGg},</if>
+            <if test="goodsPrice != null  and goodsPrice != ''">#{goodsPrice},</if>
+            <if test="goodsMoney != null  and goodsMoney != ''">#{goodsMoney},</if>
+            <if test="khCode != null  and khCode != ''">#{khCode},</if>
+            <if test="khName != null  and khName != ''">#{khName},</if>
+            <if test="orderTime != null  and orderTime != ''">#{orderTime},</if>
+            <if test="rkTime != null  and rkTime != ''">#{rkTime},</if>
+            <if test="jhTime != null  and jhTime != ''">#{jhTime},</if>
+            <if test="shPersonName != null  and shPersonName != ''">#{shPersonName},</if>
+            <if test="shPersonTel != null  and shPersonTel != ''">#{shPersonTel},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
+            <if test="orderId != null  and orderId != ''">#{orderId},</if>
+            <if test="fpTime != null  and fpTime != ''">#{fpTime},</if>
+            <if test="fpNumber != null  and fpNumber != ''">#{fpNumber},</if>
+            <if test="rkStatus != null">#{rkStatus},</if>
+            <if test="shStatus != null ">#{shStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCgddInfoChild" parameterType="CgddInfoChild">
+        update cgdd_info_child
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number = #{djNumber},</if>
+            <if test="goodsCode != null  and goodsCode != ''">goods_code = #{goodsCode},</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name = #{goodsName},</if>
+            <if test="goodsDw != null  and goodsDw != ''">goods_dw = #{goodsDw},</if>
+            <if test="goodsNum != null  and goodsNum != ''">goods_num = #{goodsNum},</if>
+            <if test="cgTime != null  and cgTime != ''">cg_time = #{cgTime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="goodsGg != null  and goodsGg != ''">goods_gg = #{goodsGg},</if>
+            <if test="goodsPrice != null  and goodsPrice != ''">goods_price = #{goodsPrice},</if>
+            <if test="goodsMoney != null  and goodsMoney != ''">goods_money = #{goodsMoney},</if>
+            <if test="khCode != null  and khCode != ''">kh_code = #{khCode},</if>
+            <if test="khName != null  and khName != ''">kh_name = #{khName},</if>
+            <if test="orderTime != null  and orderTime != ''">order_time = #{orderTime},</if>
+            <if test="rkTime != null  and rkTime != ''">rk_time = #{rkTime},</if>
+            <if test="jhTime != null  and jhTime != ''">jh_time = #{jhTime},</if>
+            <if test="shPersonName != null  and shPersonName != ''">sh_person_name = #{shPersonName},</if>
+            <if test="shPersonTel != null  and shPersonTel != ''">sh_person_tel = #{shPersonTel},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
+            <if test="orderId != null  and orderId != ''">order_id = #{orderId},</if>
+            <if test="fpTime != null  and fpTime != ''">fp_time=#{fpTime},</if>
+            <if test="fpNumber != null  and fpNumber != ''">fp_number=#{fpNumber},</if>
+            <if test="rkStatus != null">rk_status=#{rkStatus},</if>
+            <if test="shStatus != null ">sh_status=#{shStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCgddInfoChildById" parameterType="Long">
+        delete from cgdd_info_child where id = #{id}
+    </delete>
+
+    <delete id="deleteCgddInfoChildByIds" parameterType="String">
+        delete from cgdd_info_child where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteCgddInfoChildByPid" parameterType="String">
+        delete from cgdd_info_child where dj_number in (select dj_number from cgdd_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+    <update id="updateCgddInfoChildStatus" parameterType="String">
+        update cgdd_info_child set status=1  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+<!--    <update id="cancleCgddInfoStatus" parameterType="String">-->
+<!--        update cgdd_info_child set status=0  where id in-->
+<!--        <foreach item="id" collection="array" open="(" separator="," close=")">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+<!--    </update>-->
+
+<!--    <select id="checkChildOrder" parameterType="String" resultType="Integer">-->
+<!--       select count(a.id) from cgdd_info a join pay_info_child b on a.dj_number=b.order_number where a.dj_number=#{djNumber}-->
+<!--    </select>-->
+
+</mapper>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.PayInfoChildMapper">
+    
+    <resultMap type="PayInfoChild" id="PayInfoChildResult">
+        <result property="id"    column="id"    />
+        <result property="djNumber"    column="dj_number"    />
+        <result property="goodsCode"    column="goods_code"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsDw"    column="goods_dw"    />
+        <result property="fpTime"    column="fp_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="goodsGg"    column="goods_gg"    />
+        <result property="khCode"    column="kh_code"    />
+        <result property="khName"    column="kh_name"    />
+        <result property="fpNumber"    column="fp_number"    />
+        <result property="dzTime"    column="dz_time"    />
+        <result property="fpDw"    column="fp_dw"    />
+        <result property="status"    column="status"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="goodsMoney"    column="goods_money"    />
+        <result property="payType"    column="pay_type"    />
+
+    </resultMap>
+
+    <sql id="selectPayInfoChildVo">
+        select * from pay_info_child
+    </sql>
+    <select id="selectPayInfoChildByNum" parameterType="String" resultMap="PayInfoChildResult">
+        <include refid="selectPayInfoChildVo"/>
+        where dj_number =#{dj_number}
+    </select>
+    <select id="selectPayInfoChildList" parameterType="PayInfoChild" resultMap="PayInfoChildResult">
+        <include refid="selectPayInfoChildVo"/>
+        <where>  
+            <if test="djNumber != null  and djNumber != ''"> and dj_number = #{djNumber}</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsDw != null  and goodsDw != ''"> and goods_dw = #{goodsDw}</if>
+            <if test="fpTime != null  and fpTime != ''"> and fp_time = #{fpTime}</if>
+            <if test="goodsGg != null  and goodsGg != ''"> and goods_gg = #{goodsGg}</if>
+            <if test="khCode != null  and khCode != ''"> and kh_code = #{khCode}</if>
+            <if test="khName != null  and khName != ''"> and kh_name like concat('%', #{khName}, '%')</if>
+            <if test="fpNumber != null  and fpNumber != ''"> and fp_number = #{fpNumber}</if>
+            <if test="dzTime != null  and dzTime != ''"> and dz_time = #{dzTime}</if>
+            <if test="fpDw != null  and fpDw != ''"> and fp_dw = #{fpDw}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPayInfoChildById" parameterType="Integer" resultMap="PayInfoChildResult">
+        <include refid="selectPayInfoChildVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPayInfoChild" parameterType="PayInfoChild" useGeneratedKeys="true" keyProperty="id">
+        insert into pay_info_child
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number,</if>
+            <if test="goodsCode != null  and goodsCode != ''">goods_code,</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name,</if>
+            <if test="goodsDw != null  and goodsDw != ''">goods_dw,</if>
+            <if test="fpTime != null  and fpTime != ''">fp_time,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="goodsGg != null  and goodsGg != ''">goods_gg,</if>
+            <if test="khCode != null  and khCode != ''">kh_code,</if>
+            <if test="khName != null  and khName != ''">kh_name,</if>
+            <if test="fpNumber != null  and fpNumber != ''">fp_number,</if>
+            <if test="dzTime != null  and dzTime != ''">dz_time,</if>
+            <if test="fpDw != null  and fpDw != ''">fp_dw,</if>
+            <if test="status != null ">status,</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
+            <if test="orderId != null  and orderId != ''">order_id,</if>
+            <if test="goodsMoney != null  and goodsMoney != ''">goods_money,</if>
+            <if test="payType != null  and payType != ''">pay_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">#{djNumber},</if>
+            <if test="goodsCode != null  and goodsCode != ''">#{goodsCode},</if>
+            <if test="goodsName != null  and goodsName != ''">#{goodsName},</if>
+            <if test="goodsDw != null  and goodsDw != ''">#{goodsDw},</if>
+            <if test="fpTime != null  and fpTime != ''">#{fpTime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="goodsGg != null  and goodsGg != ''">#{goodsGg},</if>
+            <if test="khCode != null  and khCode != ''">#{khCode},</if>
+            <if test="khName != null  and khName != ''">#{khName},</if>
+            <if test="fpNumber != null  and fpNumber != ''">#{fpNumber},</if>
+            <if test="dzTime != null  and dzTime != ''">#{dzTime},</if>
+            <if test="fpDw != null  and fpDw != ''">#{fpDw},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
+            <if test="orderId != null  and orderId != ''">#{orderId},</if>
+            <if test="goodsMoney != null  and goodsMoney != ''">#{goodsMoney},</if>
+            <if test="payType != null  and payType != ''">#{payType},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePayInfoChild" parameterType="PayInfoChild">
+        update pay_info_child
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="djNumber != null  and djNumber != ''">dj_number = #{djNumber},</if>
+            <if test="goodsCode != null  and goodsCode != ''">goods_code = #{goodsCode},</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name = #{goodsName},</if>
+            <if test="goodsDw != null  and goodsDw != ''">goods_dw = #{goodsDw},</if>
+            <if test="fpTime != null  and fpTime != ''">fp_time = #{fpTime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="goodsGg != null  and goodsGg != ''">goods_gg = #{goodsGg},</if>
+            <if test="khCode != null  and khCode != ''">kh_code = #{khCode},</if>
+            <if test="khName != null  and khName != ''">kh_name = #{khName},</if>
+            <if test="fpNumber != null  and fpNumber != ''">fp_number = #{fpNumber},</if>
+            <if test="dzTime != null  and dzTime != ''">dz_time = #{dzTime},</if>
+            <if test="fpDw != null  and fpDw != ''">fp_dw = #{fpDw},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
+            <if test="orderId != null  and orderId != ''">order_id = #{orderId},</if>
+            <if test="goodsMoney != null  and goodsMoney != ''">goods_money=#{goodsMoney},</if>
+            <if test="payType != null  and payType != ''">pay_type=#{payType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePayInfoChildById" parameterType="Integer">
+        delete from pay_info_child where id = #{id}
+    </delete>
+
+    <delete id="deletePayInfoChildByIds" parameterType="String">
+        delete from pay_info_child where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deletePayInfoChildByPid" parameterType="String">
+        delete from pay_info_child where dj_number in (select dj_number from pay_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+    </delete>
+</mapper>
