@@ -1,15 +1,6 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
-      <el-form-item label="商品编码" prop="goodsCode">
-        <el-input
-          v-model="queryParams.goodsCode"
-          placeholder="请输入商品编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="商品名称" prop="goodsName">
         <el-input
           v-model="queryParams.goodsName"
@@ -32,6 +23,15 @@
         <el-input
           v-model="queryParams.goodsGg"
           placeholder="请输入商品规格"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+       <el-form-item label="料号" prop="goodsCodeImg">
+        <el-input
+          v-model="queryParams.goodsCodeImg"
+          placeholder="请输入料号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -92,6 +92,7 @@
       <el-table-column label="品牌" align="center" prop="goodsAddress" />
       <el-table-column label="商品规格" align="center" prop="goodsGg" />
       <el-table-column label="商品单位" align="center" prop="goodsDw" />
+      <el-table-column label="料号" align="center" prop="goodsCodeImg" />
       <!-- <el-table-column label="备注" align="center" prop="remark" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -135,6 +136,9 @@
         </el-form-item>
         <el-form-item label="商品规格" prop="goodsGg">
           <el-input v-model="form.goodsGg" placeholder="请输入商品规格" />
+        </el-form-item>
+       <el-form-item label="料号" prop="goodsCode">
+          <el-input v-model="form.goodsCodeImg" placeholder="请输入料号" />
         </el-form-item>
         <el-form-item label="商品单位" prop="goodsDw">
            <el-select v-model="form.goodsDw" placeholder="请输入商品单位" style="width:100%">

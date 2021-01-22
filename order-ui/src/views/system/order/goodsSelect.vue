@@ -35,6 +35,7 @@
       <el-table-column label="商品编码" align="center" prop="goodsCode" />
       <el-table-column label="商品名称" align="center" prop="goodsName" />
       <el-table-column label="商品规格" align="center" prop="goodsGg" />
+      <el-table-column label="料号" align="center" prop="goodsCodeImg" />
       <el-table-column label="商品单位" align="center" prop="goodsDw" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">

@@ -80,6 +80,7 @@
           />
           <el-table-column label="供应商" align="center" prop="khName" />
           <!-- <el-table-column label="订单日期" align="center" prop="djTime" /> -->
+          <el-table-column label="商品编码" align="center" prop="goodsCode" />
           <el-table-column label="商品名称" align="center" prop="goodsName" />
           <el-table-column label="规格" align="center" prop="goodsGg" />
           <el-table-column label="金额" align="center" prop="goodsMoney" />

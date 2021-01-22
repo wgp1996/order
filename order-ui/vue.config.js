@@ -30,6 +30,20 @@ module.exports = {
   // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
   productionSourceMap: false,
   // webpack-dev-server 相关配置 类似Nginx 部署
+  // devServer: {
+  //   host: 'localhost',
+  //   port: 8099,
+  //   proxy: {
+  //     [process.env.VUE_APP_BASE_API]: {
+  //       target: `https://keboo.cn/order/`,
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         ['^' + process.env.VUE_APP_BASE_API]: ''
+  //       }
+  //     }
+  //   },
+  //   disableHostCheck: true
+  // },
   devServer: {
     host: 'localhost',
     port: 80,

@@ -4,7 +4,7 @@
       :model="queryParams"
       ref="queryForm"
       :inline="true"
-      label-width="80px"
+      label-width="70px"
     >
       <el-form-item label="订单号" prop="orderNumber">
         <el-input
@@ -39,6 +39,24 @@
             :value="dict.dictValue"
           ></el-option>
         </el-select>
+      </el-form-item>
+       <el-form-item label="商品名称" prop="goodsName">
+        <el-input
+          v-model="queryParams.goodsName"
+          placeholder="请输入商品名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="料号" prop="goodsCodeImg">
+        <el-input
+          v-model="queryParams.goodsCodeImg"
+          placeholder="请输入料号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item label="开始日期" prop="djTime">
         <el-date-picker
@@ -150,6 +168,8 @@
     <el-table
       v-loading="loading"
       :data="leaseList"
+       :summary-method="getSummariesMain"
+         show-summary
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
@@ -158,7 +178,9 @@
       <el-table-column label="入库状态" align="center" prop="rkStatusName" />
       <el-table-column label="交货状态" align="center" prop="shStatusName" />
       <el-table-column label="订单号" align="center" prop="orderNumber" />
+      <el-table-column label="商品名称" align="center" prop="goodsName" />
       <el-table-column label="采购日期" align="center" prop="cgTime" />
+      <el-table-column label="采购数量" align="center" prop="goodsNum" />
       <el-table-column label="采购金额" align="center" prop="goodsMoney" />
       <el-table-column
         label="操作"
@@ -197,6 +219,7 @@
     <pagination
       v-show="total > 0"
       :total="total"
+      :page-sizes="[10, 30, 50,100,300,500]"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
@@ -269,6 +292,18 @@
                 ></el-option>
               </el-select>
               <span>{{ scope.row.goodsDw }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="料号" width="120">
+            <template scope="scope">
+              <el-input
+                size="small"
+                :disabled="true"
+                v-model="scope.row.goodsCodeImg"
+                placeholder="请输入规格"
+                @change="scope.$index, scope.row"
+              ></el-input>
+              <span>{{ scope.row.goodsCodeImg }}</span>
             </template>
           </el-table-column>
           <el-table-column label="供应商" prop="khCode" width="150">
@@ -511,6 +546,8 @@ export default {
         khName: undefined,
         beginTime: undefined,
         endTime: undefined,
+        goodsCodeImg:undefined,
+        goodsName:undefined
       },
       // 表单参数
       form: {},
@@ -544,6 +581,35 @@ export default {
     });
   },
   methods: {
+     getSummariesMain (param, arr = []) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 7) {
+          sums[index] = '合计:';
+          return;
+        };
+        let bor = true;
+        //判断是否存在不需要合计的列
+        if (arr.length > 0 && (arr.find(item => item == column.property) != undefined)) {
+          bor = false
+        };
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value)) && bor) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return (Number(prev) + Number(curr)).toFixed(2);
+            } else {
+              return Number(prev);
+            }
+          }, 0);
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    },
     //选择客户
     selectKh(data, index, row) {
       //根据编码找产地
@@ -681,14 +747,14 @@ export default {
     starAdd(obj) {
       if (
         obj.columnIndex === 0 ||
-        obj.columnIndex === 3 ||
         obj.columnIndex === 4 ||
         obj.columnIndex === 5 ||
         obj.columnIndex === 6 ||
         obj.columnIndex === 7 ||
         obj.columnIndex === 8 ||
         obj.columnIndex === 9 ||
-        obj.columnIndex === 10
+        obj.columnIndex === 10 ||
+        obj.columnIndex === 11
       ) {
         return "star";
       }
@@ -799,6 +865,7 @@ export default {
        // this.tableData = [];
         let goodsInfo = new Object();
         goodsInfo.goodsCode = row.goodsCode;
+        goodsInfo.goodsCodeImg = row.goodsCodeImg;
         goodsInfo.goodsName = row.goodsName;
         goodsInfo.orderNumber = row.djNumber;
         goodsInfo.orderId = row.id;
@@ -833,6 +900,7 @@ export default {
           }
           let goodsInfo = new Object();
           goodsInfo.goodsCode = row.goodsCode;
+          goodsInfo.goodsCodeImg = row.goodsCodeImg;
           goodsInfo.goodsName = row.goodsName;
           goodsInfo.orderNumber = row.djNumber;
           goodsInfo.orderId = row.id;

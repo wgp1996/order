@@ -144,6 +144,8 @@
     <el-table
       v-loading="loading"
       :data="leaseList"
+       :summary-method="getSummariesMain"
+         show-summary
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
@@ -159,10 +161,11 @@
             <el-table-column label="商品名称" align="center" prop="goodsName" />
             <el-table-column label="商品规格" align="center" prop="goodsGg" />
             <el-table-column label="商品单位" align="center" prop="goodsDw" />
+            <el-table-column label="料号" align="center" prop="goodsCodeImg" />
             <el-table-column label="数量" align="center" prop="goodsNum" />
             <el-table-column label="单价" align="center" prop="goodsPrice" />
             <el-table-column label="金额" align="center" prop="goodsMoney" />
-            <el-table-column label="备注" align="center" prop="remark" />
+            <!-- <el-table-column label="备注" align="center" prop="remark" /> -->
           </el-table>
         </template>
       </el-table-column>
@@ -203,6 +206,7 @@
     <pagination
       v-show="total > 0"
       :total="total"
+      :page-sizes="[10, 30, 50,100,300,500]"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
@@ -665,7 +669,36 @@ export default {
           sums[index] = values.reduce((prev, curr) => {
             const value = Number(curr);
             if (!isNaN(value)) {
-              return Number(prev) + Number(curr);
+              return (Number(prev) + Number(curr)).toFixed(2);
+            } else {
+              return Number(prev);
+            }
+          }, 0);
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    },
+    getSummariesMain (param, arr = []) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 6) {
+          sums[index] = '合计:';
+          return;
+        };
+        let bor = true;
+        //判断是否存在不需要合计的列
+        if (arr.length > 0 && (arr.find(item => item == column.property) != undefined)) {
+          bor = false
+        };
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value)) && bor) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return (Number(prev) + Number(curr)).toFixed(2);
             } else {
               return Number(prev);
             }
@@ -859,6 +892,7 @@ export default {
 
         let goodsInfo = new Object();
         goodsInfo.goodsCode = row.goodsCode;
+        goodsInfo.goodsCodeImg = row.goodsCodeImg;
         goodsInfo.goodsName = row.goodsName;
         goodsInfo.goodsDw = row.goodsDw;
         goodsInfo.goodsGg = row.goodsGg;
@@ -886,6 +920,7 @@ export default {
           let row = rows[i];
           let goodsInfo = new Object();
           goodsInfo.goodsCode = row.goodsCode;
+          goodsInfo.goodsCodeImg = row.goodsCodeImg;
           goodsInfo.goodsName = row.goodsName;
           goodsInfo.goodsDw = row.goodsDw;
           goodsInfo.goodsGg = row.goodsGg;
