@@ -23,7 +23,8 @@ public class CgRkdSingleChild extends BaseEntity
     private String djNumber;
 
 
-
+    @Excel(name = "料号")
+    private String goodsCodeImg;
     /** 商品编码 */
     @Excel(name = "商品编码")
     private String goodsCode;
@@ -69,13 +70,14 @@ public class CgRkdSingleChild extends BaseEntity
     private String goodsMoneyRate;
 
     private String goodsImg;
-    private  String goodsCodeImg;
     private  String pid;
     private  String djStatusName;
     private  String payTypeName;
     private  String isRateName;
     private String djTime;
     private String khName;
+
+
 
     public String getKhName() {
         return khName;

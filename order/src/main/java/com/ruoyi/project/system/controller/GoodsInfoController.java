@@ -117,15 +117,15 @@ public class GoodsInfoController extends BaseController
     {
         GoodsInfo info=goodsInfoService.selectGoodsInfoByName(goodsInfo.getGoodsName(),-1);
         if(info!=null) {
-            return  toAjaxByError("该商品在系统中已存在");
+            return  toAjaxByError("商品重复！");
         }else{
             goodsInfo.setType(0);
             goodsInfo.setCreateBy(SecurityUtils.getUsername());
             goodsInfo.setGoodsCode(StringUtils.getRandomCode("SPM"));
-            if(goodsInfo.getGoodsCodeImg()==""){
-                String goodsCodeImg=MatrixToImageWriter.createCodeImg(goodsInfo.getGoodsCode());
-                if(goodsCodeImg!=""){
-                    goodsInfo.setGoodsCodeImg(serverConfig.getUrl()+goodsCodeImg);
+            if(goodsInfo.getGoodsCodeImg()!=""){
+                GoodsInfo codeInfo=goodsInfoService.selectGoodsInfoByCode(goodsInfo.getGoodsCodeImg(),-1);
+                if(codeInfo!=null) {
+                    return  toAjaxByError("料号重复!");
                 }
             }
             return toAjax(goodsInfoService.insertGoodsInfo(goodsInfo));
@@ -142,12 +142,12 @@ public class GoodsInfoController extends BaseController
     {
         GoodsInfo info=goodsInfoService.selectGoodsInfoByName(goodsInfo.getGoodsName(),goodsInfo.getId());
         if(info!=null) {
-            return  toAjaxByError("该商品在系统中已存在");
+            return  toAjaxByError("商品重复!");
         }else{
-            if(goodsInfo.getGoodsCodeImg()==""){
-                String goodsCodeImg=MatrixToImageWriter.createCodeImg(goodsInfo.getGoodsCode());
-                if(goodsCodeImg!=""){
-                    goodsInfo.setGoodsCodeImg(serverConfig.getUrl()+goodsCodeImg);
+            if(goodsInfo.getGoodsCodeImg()!=""){
+                GoodsInfo codeInfo=goodsInfoService.selectGoodsInfoByCode(goodsInfo.getGoodsCodeImg(),goodsInfo.getId());
+                if(codeInfo!=null) {
+                    return  toAjaxByError("料号重复!");
                 }
             }
             goodsInfo.setUpdateBy(SecurityUtils.getUsername());

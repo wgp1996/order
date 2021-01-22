@@ -127,11 +127,22 @@ public class CgddInfoChildController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody CgddInfoChild cgddInfoChild)
     {
-        if(cgddInfoChild.getStatus()>0||cgddInfoChild.getRkStatus()>0||cgddInfoChild.getShStatus()>0){
-            return toAjaxByError(cgddInfoChild.getDjNumber()+"：该单据状态禁止修改!");
+        //未改变状态可修改所有
+        if(cgddInfoChild.getRkStatus()==0&&cgddInfoChild.getShStatus()==0&&cgddInfoChild.getStatus()==0){
+            cgddInfoChild.setCreateBy(SecurityUtils.getUsername());
+            cgddInfoChildService.updateCgddInfoChild(cgddInfoChild);
+        }else{
+            CgddInfoChild rkTimeChild=new CgddInfoChild();
+            rkTimeChild.setId(cgddInfoChild.getId());
+            //已入库未交货可以修改入库日期
+            if(cgddInfoChild.getRkStatus()==1&&cgddInfoChild.getShStatus()==0){
+                rkTimeChild.setRkTime(cgddInfoChild.getRkTime());
+            }
+            rkTimeChild.setRemark(cgddInfoChild.getRemark());
+            cgddInfoChildService.updateCgddInfoChild(rkTimeChild);
+            rkTimeChild=null;
         }
-        cgddInfoChild.setCreateBy(SecurityUtils.getUsername());
-        return toAjax(cgddInfoChildService.updateCgddInfoChild(cgddInfoChild));
+        return toAjaxBySuccess("操作成功!");
     }
 
     /**
@@ -143,8 +154,8 @@ public class CgddInfoChildController extends BaseController
     public AjaxResult editFp(@RequestBody CgddInfoChild cgddInfoChild)
     {
         CgddInfoChild item=cgddInfoChildService.selectCgddInfoChildById(cgddInfoChild.getId());
-        if(item.getStatus()!=1){
-            return  toAjaxByError("该采购订单未生效,禁止开票!");
+        if(item.getRkStatus()!=1){
+            return  toAjaxByError("该采购订单未入库,禁止开票!");
         }
         //检查是否为已生效的订单
         if(item.getFpNumber()!=null&&!"".equalsIgnoreCase(item.getFpNumber())){

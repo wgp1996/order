@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
             <if test="goodsGg != null  and goodsGg != ''"> and goods_gg like concat('%', #{goodsGg}, '%')</if>
             <if test="goodsAddress != null  and goodsAddress != ''"> and goods_address like concat('%', #{goodsAddress}, '%')</if>
-            <if test="goodsImg != null  and goodsImg != ''"> and goods_img = #{goodsImg}</if>
+            <if test="goodsCodeImg != null  and goodsCodeImg != ''"> and goods_code_img  like concat('%', #{goodsCodeImg}, '%')</if>
             <if test="type != null "> and type = #{type}</if>
             <if test="goodsType != null "> and goods_type = #{goodsType}</if>
             and `type` =0
@@ -77,6 +77,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectGoodsInfoByName"  resultMap="GoodsInfoResult">
         <include refid="selectGoodsInfoVo"/>
         where goods_name = #{name}
+        <if test="id!=-1">
+            and id != #{id}
+        </if>
+    </select>
+
+    <select id="selectGoodsInfoByCode"  resultMap="GoodsInfoResult">
+        <include refid="selectGoodsInfoVo"/>
+        where goods_code_img = #{name}
         <if test="id!=-1">
             and id != #{id}
         </if>

@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="shStatusName"    column="sh_status_name"    />
         <result property="orderDjTime"    column="order_dj_time"    />
         <result property="personName"    column="person_name"    />
-
+        <result property="goodsCodeImg"    column="goods_code_img"    />
     </resultMap>
 
     <sql id="selectCgddInfoChildVo">
@@ -100,8 +100,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             1=1
             <if test="_parameter==1"> and a.`rk_status`=0 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(rk_time,'%Y-%m-%d') </if>
-            <if test="_parameter==2"> and a.`sh_status`=0 and a.`rk_status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d') </if>
-            <if test="_parameter==3"> and a.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')</if>
+            <if test="_parameter==2"> and a.fp_number is  null and a.`sh_status`=0 and a.`rk_status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d') </if>
+            <if test="_parameter==3"> and a.fp_number is  null and a.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')</if>
             <if test="_parameter==0||_parameter==null"> and  1=2 </if>
         </where>
         order by a.create_time desc
@@ -111,6 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCgddInfoChildList" parameterType="CgddInfoChild" resultMap="CgddInfoChildResult">
         <include refid="selectCgddInfoChildVoByRole"/>
         <where>
+            <if test="goodsCodeImg != null  and goodsCodeImg != ''"> and goods_code_img like concat('%', #{goodsCodeImg}, '%')</if>
             <if test="beginTime != null  and beginTime != ''"> and cg_time >= #{beginTime}</if>
             <if test="endTime != null  and endTime != ''"> and cg_time &lt;= #{endTime}</if>
             <if test="djNumber != null  and djNumber != ''"> and dj_number = #{djNumber}</if>
@@ -184,6 +185,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpNumber != null  and fpNumber != ''">fp_number,</if>
             <if test="rkStatus != null">rk_status,</if>
             <if test="shStatus != null ">sh_status,</if>
+            <if test="goodsCodeImg != null  and goodsCodeImg != ''">goods_code_img,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
@@ -215,6 +217,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpNumber != null  and fpNumber != ''">#{fpNumber},</if>
             <if test="rkStatus != null">#{rkStatus},</if>
             <if test="shStatus != null ">#{shStatus},</if>
+            <if test="goodsCodeImg != null  and goodsCodeImg != ''">#{goodsCodeImg},</if>
          </trim>
     </insert>
 
@@ -249,6 +252,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpNumber != null  and fpNumber != ''">fp_number=#{fpNumber},</if>
             <if test="rkStatus != null">rk_status=#{rkStatus},</if>
             <if test="shStatus != null ">sh_status=#{shStatus},</if>
+            <if test="goodsCodeImg != null  and goodsCodeImg != ''">goods_code_img = #{goodsCodeImg},</if>
         </trim>
         where id = #{id}
     </update>

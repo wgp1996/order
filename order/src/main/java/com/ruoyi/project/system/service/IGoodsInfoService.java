@@ -27,6 +27,16 @@ public interface IGoodsInfoService
     public GoodsInfo selectGoodsInfoByName(String name,Integer id);
 
     /**
+     * 查询商品建档
+     *
+     * @param name 商品建档名称
+     * @return 商品建档
+     */
+    public GoodsInfo selectGoodsInfoByCode(String name,Integer id);
+
+
+
+    /**
      * 查询商品建档列表
      * 
      * @param goodsInfo 商品建档

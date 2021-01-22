@@ -37,8 +37,19 @@ public class GoodsInfoServiceImpl implements IGoodsInfoService
      * @param name 商品建档名称
      * @return 商品建档
      */
+    @Override
     public GoodsInfo selectGoodsInfoByName(String name,Integer id){
         return goodsInfoMapper.selectGoodsInfoByName(name,id);
+    }
+    /**
+     * 查询商品建档
+     *
+     * @param name 商品建档名称
+     * @return 商品建档
+     */
+    @Override
+    public GoodsInfo selectGoodsInfoByCode(String name,Integer id){
+        return goodsInfoMapper.selectGoodsInfoByCode(name,id);
     }
     /**
      * 查询商品建档列表

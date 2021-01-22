@@ -119,6 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="goodsMoneyRate != null  and goodsMoneyRate != ''">goods_money_rate,</if>
             <if test="storeid != null  and storeid != ''">storeId,</if>
             <if test="shopName != null  and shopName != ''">shop_name,</if>
+            <if test="goodsCodeImg != null  and goodsImg != ''">goods_code_img,</if>
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -141,6 +142,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="goodsMoneyRate != null  and goodsMoneyRate != ''">#{goodsMoneyRate},</if>
             <if test="storeid != null  and storeid != ''">#{storeid},</if>
             <if test="shopName != null  and shopName != ''">#{shopName},</if>
+            <if test="goodsCodeImg != null  and goodsImg != ''">#{goodsCodeImg},</if>
             sysdate()
          </trim>
     </insert>
@@ -166,6 +168,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="goodsMoneyRate != null  and goodsMoneyRate != ''">goods_money_rate = #{goodsMoneyRate},</if>
             <if test="storeid != null  and storeid != ''">storeId = #{storeid},</if>
             <if test="shopName != null  and shopName != ''">shop_name = #{shopName},</if>
+            <if test="goodsCodeImg != null  and goodsCodeImg != ''">goods_code_img = #{goodsCodeImg},</if>
             update_time = sysdate()
         </trim>
         where id = #{id}

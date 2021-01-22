@@ -50,11 +50,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectIndexCount"  resultMap="CgddInfoResult">
         select (select count(a.id) from cgdd_info_child a) as order_count,
-        (select count(id) from cg_rkd_single where status!=2) as cg_count,
+        ((select count(id) from cg_rkd_single where status=0)+(select count(a.id) from cg_rkd_single a where a.status=1 and a.dj_number not in(select b.dj_number from cg_rkd_single_child b join cgdd_info_child c on b.id=c.order_id GROUP BY b.dj_number))) as cg_count,
         (select count(a.id) from cgdd_info_child a  where a.`sh_status`=0 and a.`rk_status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d')) as jh_count,
         (select count(a.id) from cgdd_info_child a  where a.`rk_status`=0 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(rk_time,'%Y-%m-%d')) as rk_count,
-        (select count(a.id) from cgdd_info_child a  where a.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')) as gkp_count,
-        (select count(a.id) from cg_rkd_single a  where a.`status`=2 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(dj_time, INTERVAL -30 DAY),'%Y-%m-%d')) as hkp_count
+        (select count(a.id) from cgdd_info_child a  where a.`status`=1 and a.fp_number is null and DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')) as gkp_count,
+        (select count(a.id) from cg_rkd_single a  where a.`status`=2 and  a.fp_number is null and DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(dj_time, INTERVAL -30 DAY),'%Y-%m-%d')) as hkp_count
     </select>
     
     <select id="selectCgddInfoById" parameterType="Long" resultMap="CgddInfoResult">

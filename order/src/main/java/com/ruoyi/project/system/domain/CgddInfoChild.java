@@ -100,6 +100,9 @@ public class CgddInfoChild extends BaseEntity
     @Excel(name = "开票日期")
     private String fpTime;
 
+    @Excel(name = "料号")
+    private String goodsCodeImg;
+
     @Excel(name = "入库状态")
     private Integer rkStatus;
 
@@ -112,6 +115,14 @@ public class CgddInfoChild extends BaseEntity
     private String orderFpStatusName;
     private String personName;
     private String orderDjTime;
+
+    public String getGoodsCodeImg() {
+        return goodsCodeImg;
+    }
+
+    public void setGoodsCodeImg(String goodsCodeImg) {
+        this.goodsCodeImg = goodsCodeImg;
+    }
 
     private String rows;
 

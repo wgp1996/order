@@ -203,7 +203,7 @@ public class CgRkdSingleController extends BaseController
         if(cgRkd.getRows()==""){
             return  toAjaxByError("明细信息不能为空!");
         }
-        int result=cgRkdService.checkDjNumber(cgRkd.getDjNumber(),"-1");
+        int result=cgRkdService.checkDjNumber(cgRkd.getDjNumber(),"");
         if(result>0){
             return  toAjaxByError("订单重复!");
         }
@@ -237,7 +237,7 @@ public class CgRkdSingleController extends BaseController
         if(cgRkd.getRows()==""){
             return  toAjaxByError("明细信息不能为空!");
         }
-        int result=cgRkdService.checkDjNumber(cgRkd.getDjNumber(),"-1");
+        int result=cgRkdService.checkDjNumber(cgRkd.getDjNumber(),cgRkd.getId() );
         if(result>0){
             return  toAjaxByError("订单重复!");
         }
