@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select a.*,case a.status when 0 then '正操作' when 1 then '已确认' when 2 then '已生效' end as dj_status_name,
         case ISNULL(a.fp_number) when 1 then '未开票' when 0 then '已开票' end  as fp_status,
         (select dict_label from sys_dict_data where dict_type='pay_type' and dict_value=a.pay_type)as pay_type_name,
-        (select  truncate(sum(goods_money),2) from cg_rkd_single_child where dj_number=a.dj_number) as sum_money
+        (select  cast(sum(goods_money) AS decimal(15,2)) from cg_rkd_single_child where dj_number=a.dj_number) as sum_money
         from cg_rkd_single a
         <where>
             1=1
@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select a.*,case a.status when 0 then '正操作' when 1 then '已确认' when 2 then '已生效' end as dj_status_name,
         case ISNULL(a.fp_number) when 1 then '未开票' when 0 then '已开票' end  as fp_status,
         (select dict_label from sys_dict_data where dict_type='pay_type' and dict_value=a.pay_type)as pay_type_name,
-        (select truncate(sum(goods_money),2) from cg_rkd_single_child where dj_number=a.dj_number) as sum_money
+        (select cast(sum(goods_money) AS decimal(15,2)) from cg_rkd_single_child where dj_number=a.dj_number) as sum_money
          from cg_rkd_single a
         join sys_user u on a.create_by=u.user_name
         left join sys_dept d on u.dept_id = d.dept_id

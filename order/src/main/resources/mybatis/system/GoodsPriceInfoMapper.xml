@@ -18,10 +18,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
         <result property="goodsGg"    column="goods_gg"    />
         <result property="goodsDw"    column="goods_dw"    />
+        <result property="goodsCodeImg"    column="goods_code_img"    />
     </resultMap>
 
     <sql id="selectGoodsPriceInfoVo">
-        select id, goods_name, goods_code, kh_name, kh_code, goods_price, create_by, create_time, update_by, update_time, remark, goods_gg, goods_dw from goods_price_info
+        select * from goods_price_info
     </sql>
     <sql id="selectGoodsPriceInfoVoByRole">
         select a.* from goods_price_info a
@@ -30,15 +31,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectGoodsPriceInfoList" parameterType="GoodsPriceInfo" resultMap="GoodsPriceInfoResult">
-        <include refid="selectGoodsPriceInfoVo"/>
+        select a.*,b.goods_code_img from goods_price_info a left join goods_info b on a.goods_code=b.goods_code
         <where>  
-            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
-            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
-            <if test="khName != null  and khName != ''"> and kh_name like concat('%', #{khName}, '%')</if>
-            <if test="khCode != null  and khCode != ''"> and kh_code = #{khCode}</if>
-            <if test="goodsPrice != null "> and goods_price = #{goodsPrice}</if>
-            <if test="goodsGg != null  and goodsGg != ''"> and goods_gg = #{goodsGg}</if>
-            <if test="goodsDw != null  and goodsDw != ''"> and goods_dw = #{goodsDw}</if>
+            <if test="goodsName != null  and goodsName != ''"> and a.goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and b.goods_code_img like concat('%', #{goodsCode}, '%')</if>
+            <if test="khName != null  and khName != ''"> and a.kh_name like concat('%', #{khName}, '%')</if>
+            <if test="khCode != null  and khCode != ''"> and a.kh_code = #{khCode}</if>
         </where>
     </select>
 
@@ -49,6 +47,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectGoodsPriceInfoById" parameterType="Long" resultMap="GoodsPriceInfoResult">
         <include refid="selectGoodsPriceInfoVo"/>
         where id = #{id}
+    </select>
+
+    <select id="checkGoods"  resultType="Integer">
+        select count(id) from goods_price_info where goods_code = #{goodsCode}
+        <if test="id != null and id!=-1">
+            and id!=#{id}
+        </if>
     </select>
         
     <insert id="insertGoodsPriceInfo" parameterType="GoodsPriceInfo" useGeneratedKeys="true" keyProperty="id">

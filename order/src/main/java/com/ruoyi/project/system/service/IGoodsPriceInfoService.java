@@ -53,6 +53,7 @@ public interface IGoodsPriceInfoService
      */
     public int deleteGoodsPriceInfoByIds(Long[] ids);
 
+    public int checkGoods(String goodsCode,Integer id);
     /**
      * 删除商品价格管理信息
      * 

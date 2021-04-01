@@ -46,12 +46,22 @@ public class GoodsPriceInfo extends BaseEntity
     @Excel(name = "单位")
     private String goodsDw;
 
-    public void setId(Long id) 
+    private String goodsCodeImg;
+
+    public String getGoodsCodeImg() {
+        return goodsCodeImg;
+    }
+
+    public void setGoodsCodeImg(String goodsCodeImg) {
+        this.goodsCodeImg = goodsCodeImg;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }

@@ -76,8 +76,34 @@ public class CgRkdSingleChild extends BaseEntity
     private  String isRateName;
     private String djTime;
     private String khName;
+    private String personName;
+    private String personCode;
 
+    private String gysGoodsPrice;
 
+    public String getGysGoodsPrice() {
+        return gysGoodsPrice;
+    }
+
+    public void setGysGoodsPrice(String gysGoodsPrice) {
+        this.gysGoodsPrice = gysGoodsPrice;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public String getPersonCode() {
+        return personCode;
+    }
+
+    public void setPersonCode(String personCode) {
+        this.personCode = personCode;
+    }
 
     public String getKhName() {
         return khName;

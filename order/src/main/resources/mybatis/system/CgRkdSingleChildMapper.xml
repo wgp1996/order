@@ -33,6 +33,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isRateName"    column="is_rate_name"    />
         <result property="djTime"    column="dj_time"    />
         <result property="khName"    column="kh_name"    />
+        <result property="personName"    column="person_name"    />
+        <result property="personCode"    column="person_code"    />
+        <result property="gysGoodsPrice"    column="gys_goods_price"    />
     </resultMap>
 
     <sql id="selectCgRkdSingleChildVo">
@@ -56,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by a.create_time desc
     </select>
     <select id="selectCgRkdSingleOrderList" parameterType="CgRkdSingleChild" resultMap="CgRkdSingleChildResult">
-        select a.*,b.dj_time,b.person_name as kh_name from cg_rkd_single_child a join cg_rkd_single b on a.dj_number=b.dj_number
+        select a.*,b.dj_time,b.person_name as kh_name,c.kh_code as person_code,c.kh_name as person_name,c.goods_price as gys_goods_price from cg_rkd_single_child a join cg_rkd_single b on a.dj_number=b.dj_number left join goods_price_info c on a.goods_code=c.goods_code
         <where>
             <if test="djNumber != null  and djNumber != ''"> and a.dj_number = #{djNumber}</if>
             <if test="createBy != null  and createBy != ''"> and a.create_by = #{createBy}</if>

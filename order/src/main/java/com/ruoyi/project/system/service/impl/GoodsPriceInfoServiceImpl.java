@@ -86,6 +86,16 @@ public class GoodsPriceInfoServiceImpl implements IGoodsPriceInfoService
     }
 
     /**
+     * 检测商品唯一
+     * @param goodsCode
+     * @param id
+     * @return
+     */
+    @Override
+    public int checkGoods(String goodsCode,Integer id){
+        return goodsPriceInfoMapper.checkGoods(goodsCode,id);
+    }
+    /**
      * 删除商品价格管理信息
      * 
      * @param id 商品价格管理ID

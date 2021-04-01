@@ -26,7 +26,7 @@ public interface GoodsPriceInfoMapper
      * @return 商品价格管理集合
      */
     public List<GoodsPriceInfo> selectGoodsPriceInfoList(GoodsPriceInfo goodsPriceInfo);
-
+    public int checkGoods(String goodsCode,Integer id);
     /**
      * 新增商品价格管理
      * 

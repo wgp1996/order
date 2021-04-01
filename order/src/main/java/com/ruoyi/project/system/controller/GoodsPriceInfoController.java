@@ -84,6 +84,9 @@ public class GoodsPriceInfoController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody GoodsPriceInfo goodsPriceInfo)
     {
+        if(goodsPriceInfoService.checkGoods(goodsPriceInfo.getGoodsCode(),-1)>0){
+            return toAjaxByError("商品重复");
+        }
         goodsPriceInfo.setCreateBy(SecurityUtils.getUsername());
         return toAjax(goodsPriceInfoService.insertGoodsPriceInfo(goodsPriceInfo));
     }
@@ -96,6 +99,9 @@ public class GoodsPriceInfoController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody GoodsPriceInfo goodsPriceInfo)
     {
+        if(goodsPriceInfoService.checkGoods(goodsPriceInfo.getGoodsCode(),goodsPriceInfo.getId().intValue())>0){
+            return toAjaxByError("商品重复");
+        }
         goodsPriceInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(goodsPriceInfoService.updateGoodsPriceInfo(goodsPriceInfo));
     }
