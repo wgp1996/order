@@ -325,6 +325,8 @@
 
           <el-table
             :data="tableData"
+             :summary-method="getSummariesChild"
+             show-summary
             class="tb-edit"
             style="width: 100%"
             highlight-current-row
@@ -501,6 +503,7 @@ export default {
   },
   data() {
     return {
+      sumMoney:0,
       //用户信息
       user: {
         ownerCode: "",
@@ -709,6 +712,18 @@ export default {
       });
       return sums;
     },
+     getSummariesChild (param, arr = []) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 4) {
+          sums[index] = '金额合计:';
+          return;
+        };
+      });
+      sums[5]=this.sumMoney;
+      return sums;
+    },
     editTime(i) {
       if (i < 10) {
         i = "0" + i;
@@ -848,17 +863,17 @@ export default {
           ).toFixed(2);
           row.goodsMoneyRate = row.goodsMoney;
         }
+        this.getSumMoney();
     },
-    getSumMoney(index, row) {
+    getSumMoney() {
       //计算总金额
       let sumMoney = 0;
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].goodsNum != "") {
-          sumMoney += parseFloat(this.tableData[i].goodsNum);
+        if (this.tableData[i].goodsMoney != "") {
+          sumMoney += parseFloat(this.tableData[i].goodsMoney);
         }
       }
-      this.form.storeName = sumMoney.toString();
-      console.log(this.form);
+      this.sumMoney=sumMoney.toFixed(2);
     },
     handleChildDelete(index, row) {
       if (row.id != "" && row.id != undefined && row.id != null) {
@@ -869,6 +884,7 @@ export default {
       } else {
         this.tableData.splice(index, 1);
       }
+      this.getSumMoney();
       console.log(index, row);
     },
     /** 操作 */
@@ -889,7 +905,6 @@ export default {
         //     return;
         //   }
         // }
-
         let goodsInfo = new Object();
         goodsInfo.goodsCode = row.goodsCode;
         goodsInfo.goodsCodeImg = row.goodsCodeImg;
@@ -1030,6 +1045,7 @@ export default {
         getCgrkdSingleChild(this.form.djNumber).then((response) => {
           //this.form.rows = response.data;
           this.tableData = response.rows;
+          this.getSumMoney();
         });
         this.open = true;
         this.title = "修改订单";

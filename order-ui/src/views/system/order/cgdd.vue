@@ -178,6 +178,7 @@
       <el-table-column label="入库状态" align="center" prop="rkStatusName" />
       <el-table-column label="交货状态" align="center" prop="shStatusName" />
       <el-table-column label="订单号" align="center" prop="orderNumber" />
+      <el-table-column label="料号" align="center" prop="goodsCodeImg" />
       <el-table-column label="商品名称" align="center" prop="goodsName" />
       <el-table-column label="采购日期" align="center" prop="cgTime" />
       <el-table-column label="采购数量" align="center" prop="goodsNum" />
@@ -874,10 +875,14 @@ export default {
         goodsInfo.cgTime = this.getTime();
         goodsInfo.goodsGg = row.goodsGg;
         goodsInfo.goodsNum = row.goodsNum;
-        goodsInfo.goodsPrice = row.goodsPrice;
-        goodsInfo.goodsMoney = row.goodsMoney;
-        goodsInfo.khCode = "";
-        goodsInfo.khName = "";
+        goodsInfo.goodsPrice = row.gysGoodsPrice;
+        if(row.gysGoodsPrice!=null&&row.gysGoodsPrice!=undefined){
+          goodsInfo.goodsMoney = (parseFloat(row.gysGoodsPrice)*parseFloat(row.goodsNum)).toFixed(2);
+        }else{
+            goodsInfo.goodsMoney = "";  
+        }
+        goodsInfo.khCode = row.personCode;
+        goodsInfo.khName = row.personName;
         goodsInfo.rkTime = this.getThreeTime();
         goodsInfo.jhTime = "";
         goodsInfo.shPersonName = "";
@@ -909,10 +914,14 @@ export default {
           goodsInfo.cgTime = this.getTime();
           goodsInfo.goodsGg = row.goodsGg;
           goodsInfo.goodsNum = row.goodsNum;
-          goodsInfo.goodsPrice = row.goodsPrice;
-          goodsInfo.goodsMoney = row.goodsMoney;
-          goodsInfo.khCode = "";
-          goodsInfo.khName = "";
+          goodsInfo.goodsPrice = row.gysGoodsPrice;
+          if(row.gysGoodsPrice!=null&&row.gysGoodsPrice!=undefined){
+              goodsInfo.goodsMoney = (parseFloat(row.gysGoodsPrice)*parseFloat(row.goodsNum)).toFixed(2);
+          }else{
+              goodsInfo.goodsMoney = "";  
+          }
+          goodsInfo.khCode = row.personCode;
+          goodsInfo.khName = row.personName;
           goodsInfo.rkTime = this.getThreeTime();
           goodsInfo.jhTime = "";
           goodsInfo.shPersonName = "";

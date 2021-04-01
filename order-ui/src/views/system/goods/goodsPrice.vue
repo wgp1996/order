@@ -10,6 +10,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="料号" prop="goodsCode">
+        <el-input
+          v-model="queryParams.goodsCode"
+          placeholder="请输入料号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="供应商名称" prop="khName">
         <el-input
           v-model="queryParams.khName"
@@ -69,7 +78,7 @@
     <el-table v-loading="loading" :data="goodsPriceList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="商品名称" align="center" prop="goodsName" />
-      <!-- <el-table-column label="商品编码" align="center" prop="goodsCode" /> -->
+      <el-table-column label="料号" align="center" prop="goodsCodeImg" />
       <el-table-column label="供应商名称" align="center" prop="khName" />
       <!-- <el-table-column label="客户编码" align="center" prop="khCode" /> -->
       <el-table-column label="商品价格" align="center" prop="goodsPrice" />

@@ -1,11 +1,11 @@
 <template>
-    <el-dialog :close-on-click-modal="false" :title="title"
+    <el-dialog :close-on-click-modal="false" :title="title"   width="65%"
     :visible.sync="visible">
     <el-row :gutter="20">
      <el-col :span="24" :xs="24">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
       <el-form-item label="商品名称" prop="goodsName">
-        <el-input style="width:200px"
+        <el-input style="width:150px"
           v-model="queryParams.goodsName"
           placeholder="请输入商品名称"
           clearable
@@ -14,9 +14,19 @@
         />
       </el-form-item>
       <el-form-item label="商品编码" prop="goodsCode">
-        <el-input style="width:200px"
+        <el-input style="width:150px"
           v-model="queryParams.goodsCode"
           placeholder="请输入商品编码"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+       <el-form-item label="料号" prop="goodsCodeImg">
+        <el-input
+        style="width:150px"
+          v-model="queryParams.goodsCodeImg"
+          placeholder="请输入料号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
