@@ -32,6 +32,10 @@ public class CgRkdSingleChildServiceImpl implements ICgRkdSingleChildService
     {
         return cgRkdChildMapper.selectCgRkdSingleChildById(id);
     }
+    @Override
+    public List<CgRkdSingleChild> selectCgRkdSingleChildByNumSurplus(String dj_number){
+        return cgRkdChildMapper.selectCgRkdSingleChildByNumSurplus(dj_number);
+    }
 
     /**
      * 采购订单选择订单

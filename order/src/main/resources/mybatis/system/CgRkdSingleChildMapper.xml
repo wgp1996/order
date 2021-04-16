@@ -78,6 +78,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCgRkdSingleChildVo"/>
         where a.dj_number =#{dj_number}
     </select>
+
+    <select id="selectCgRkdSingleChildByNumSurplus" parameterType="String" resultMap="CgRkdSingleChildResult">
+        <include refid="selectCgRkdSingleChildVo"/>
+        where a.dj_number =#{dj_number} and a.id not in(select ifnull(order_id,"") from cgdd_info_child)
+    </select>
     <select id="selectCgRkdSingleChildByNumber" parameterType="String" resultMap="CgRkdSingleChildResult">
         <include refid="selectCgRkdSingleChildVo"/>
         where a.dj_number =(select dj_number from cg_rkd_single where id=#{dj_number})
@@ -162,7 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            remark = #{remark},
             <if test="goodsGg != null  and goodsGg != ''">goods_gg = #{goodsGg},</if>
             <if test="goodsPrice != null  and goodsPrice != ''">goods_price = #{goodsPrice},</if>
             <if test="goodsMoney != null  and goodsMoney != ''">goods_money = #{goodsMoney},</if>

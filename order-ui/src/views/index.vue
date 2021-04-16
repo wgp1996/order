@@ -1,7 +1,21 @@
 <template>
   <div class="dashboard-editor-container">
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
-
+    <el-form :model="queryParamsOrder" ref="queryForm" :inline="true" label-width="120px"   v-if="orderShow">
+      <el-form-item label="订单号">
+        <el-input
+          v-model="djNumber"
+          placeholder="请输入订单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
     <el-row style="background: #fff; padding: 16px 16px 0; margin-bottom: 32px">
        <el-table
           v-loading="loading"
@@ -26,7 +40,21 @@
         :limit.sync="queryParamsOrder.pageSize"
         @pagination="getListOrder"
       />
-
+    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="120px"   v-if="cgddShow">
+      <el-form-item label="订单号" prop="orderNumber">
+        <el-input
+          v-model="orderNumber"
+          placeholder="请输入订单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
       <el-table
         v-if="cgddShow"
         v-loading="loading"
@@ -57,7 +85,7 @@
       <el-form-item label="订单号" prop="orderNumber">
         <el-input
           v-model="queryParamsAll.orderNumber"
-          placeholder="请输入商品编码"
+          placeholder="请输入订单号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -125,7 +153,7 @@ export default {
   },
   data() {
     return {
-      
+      djType:1,
       orderShow:true,
       cgddShow:false,
       cgddAllShow:false,
@@ -156,6 +184,7 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
+        djNumber:undefined,
         pageNum: 1,
         pageSize: 10,
         fpNumber: undefined,
@@ -192,6 +221,8 @@ export default {
       },
       // 表单参数
       form: {},
+      djNumber:"",
+      orderNumber:"",
     };
   },
   created() {
@@ -205,22 +236,35 @@ export default {
   methods: {
      /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParamsAll.pageNum = 1;
-      this.getAllList();
+      if(this.djType==1||this.djType==5){
+          this.queryParamsOrder.pageNum=1;
+          this.getListOrder();
+      }
+        if(this.djType==3||this.djType==2||this.djType==4){
+          this.queryParams.pageNum=1;
+          this.getList();
+      }
+       if(this.djType==6){
+          this.queryParamsAll.pageNum = 1;
+          this.getAllList();
+      }
     },
      /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
+      this.djNumber="";
+      this.orderNumber="";
       this.handleQuery();
     },
     returnOrder(row, event, column){
-      this.$router.push({ path: '/orderManager/order' ,query: {djNumber:row.djNumber}})
+      this.$router.push({ path: '/orderManager/order' ,query: {djNumber:row.djNumber,djType:this.djType}})
     },
     returnCgdd(row, event, column){
       this.$router.push({ path: '/cgManager/cgOrder' ,query: {djNumber:row.orderNumber}})
     },
     handleSelectionChange() {},
     handleSetLineChartData(data) {
+      this.djType=data;
       if(data==1){
           this.type = 1;
           this.getListOrder();
@@ -274,7 +318,7 @@ export default {
     /** 查询列表信息 */
     getList() {
       this.loading = true;
-      indexList(this.type,this.queryParams).then((response) => {
+      indexList(this.type,this.orderNumber,this.queryParams).then((response) => {
         this.cgddList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -290,7 +334,7 @@ export default {
     },
     getListOrder() {
       this.loading = true;
-      listIndex(this.type,this.queryParamsOrder).then((response) => {
+      listIndex(this.type,this.djNumber,this.queryParamsOrder).then((response) => {
         this.orderList= response.rows;
         this.totalOrder = response.total;
         this.loading = false;

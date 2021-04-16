@@ -28,6 +28,10 @@ public interface ICgRkdSingleChildService
      */
     public List<CgRkdSingleChild> selectCgRkdSingleChildByNumber(String dj_number);
 
+    public List<CgRkdSingleChild> selectCgRkdSingleChildByNumSurplus(String dj_number);
+
+
+
     /**
      * 查询进货单子表
      *

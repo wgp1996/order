@@ -19,9 +19,12 @@ export function index() {
 }
 
 // 查询首页待办列表
-export function indexList(status,query) {
+export function indexList(status,orderNumber,query) {
+  if(orderNumber==""){
+    orderNumber="-1";
+  }
   return request({
-    url: '/system/cgddInfo/indexList/'+status,
+    url: '/system/cgddInfo/indexList/'+status+"/"+orderNumber,
     method: 'get',
     params: query
   })

@@ -53,6 +53,7 @@
       <el-table-column label="数量" align="center" prop="goodsNum" />
       <el-table-column label="单价" align="center" prop="goodsPrice" />
       <el-table-column label="金额" align="center" prop="goodsMoney" />
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
           <el-button

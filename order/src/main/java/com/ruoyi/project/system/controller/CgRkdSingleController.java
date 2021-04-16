@@ -61,6 +61,25 @@ public class CgRkdSingleController extends BaseController
     }
 
     /**
+     * 查询剩余进货单列表
+     * 订单号下的其中一项已经生成采购单，剩下的未生成
+     */
+    @PreAuthorize("@ss.hasPermi('system:cgrkdSingle:list')")
+    @GetMapping("/surplusList")
+    @DataScope(deptAlias = "d", userAlias = "u")
+    public TableDataInfo surplusList(CgRkdSingle cgRkd)
+    {
+        startPage();
+        //改为合并子表列表展示 不显示子表信息
+        //List<CgRkdSingle> list = cgRkdService.selectCgRkdSingleAllList(cgRkd);
+        List<CgRkdSingle> list = cgRkdService.selectCgRkdSingleList(cgRkd);
+        for(CgRkdSingle info:list){
+            info.setChildrenList(cgRkdChildService.selectCgRkdSingleChildByNumSurplus(info.getDjNumber()));
+        }
+        return getDataTable(list);
+    }
+
+    /**
      * 采购订单选择订单
      */
     @GetMapping("/orderList")
@@ -75,11 +94,11 @@ public class CgRkdSingleController extends BaseController
     /**
      * 获取首页待办列表
      */
-    @GetMapping("/indexList/{status}")
-    public TableDataInfo indexList(@PathVariable("status") Integer status)
+    @GetMapping("/indexList/{status}/{djNumber}")
+    public TableDataInfo indexList(@PathVariable("status") Integer status,@PathVariable("djNumber") String djNumber)
     {
         startPage();
-        List<CgRkdSingle> list = cgRkdService.selectOrderMessageList(status);
+        List<CgRkdSingle> list = cgRkdService.selectOrderMessageList(status,djNumber);
         return getDataTable(list);
     }
 
@@ -232,7 +251,16 @@ public class CgRkdSingleController extends BaseController
     {
         //检查是否为已生效的合同
         if(cgRkd.getStatus()>=1){
-            return  toAjaxByError("该状态禁止修改!");
+            //已生效可以修改备注
+            List<CgRkdSingleChild> childList= JSONArray.parseArray(cgRkd.getRows(),CgRkdSingleChild.class);
+            for(CgRkdSingleChild child:childList){
+                CgRkdSingleChild info=new CgRkdSingleChild();
+                info.setRemark(child.getRemark());
+                info.setId(child.getId());
+                cgRkdChildService.updateCgRkdSingleChild(info);
+                info=null;
+            }
+            return  toAjaxBySuccess("备注更新成功!");
         }
         if(cgRkd.getRows()==""){
             return  toAjaxByError("明细信息不能为空!");

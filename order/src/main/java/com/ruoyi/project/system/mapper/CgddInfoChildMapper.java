@@ -40,7 +40,7 @@ public interface CgddInfoChildMapper
      * @param status 作为类型
      * @return 采购订单子表集合
      */
-    public List<CgddInfoChild> selectCgddMessageList(Integer status);
+    public List<CgddInfoChild> selectCgddMessageList(Integer status,String orderNumber);
     /**
      * 订单汇总
      * @return

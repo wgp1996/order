@@ -8,6 +8,15 @@ export function listCgrkdSingle(query) {
     params: query
   })
 }
+// 查询剩余进货单列表
+export function surplusListCgrkdSingle(query) {
+  return request({
+    url: '/system/cgrkdSingle/surplusList',
+    method: 'get',
+    params: query
+  })
+}
+
 
 
 // 查询进货单详细
@@ -59,9 +68,12 @@ export function updateCgrkdSingleFp(data) {
   })
 }
 // 查询首页待办列表
-export function listIndex(status,query) {
+export function listIndex(status,djNumber,query) {
+  if(djNumber==""){
+    djNumber="-1";
+  }
   return request({
-    url: '/system/cgrkdSingle/indexList/'+status,
+    url: '/system/cgrkdSingle/indexList/'+status+"/"+djNumber,
     method: 'get',
     params: query
   })

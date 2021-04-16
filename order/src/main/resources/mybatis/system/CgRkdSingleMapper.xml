@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectCgRkdSingleVo">
         select * from cg_rkd_single
     </sql>
-    <select id="selectOrderMessageList" parameterType="Integer" resultMap="CgRkdSingleResult">
+    <select id="selectOrderMessageList"  resultMap="CgRkdSingleResult">
         select a.*,case a.status when 0 then '正操作' when 1 then '已确认' when 2 then '已生效' end as dj_status_name,
         case ISNULL(a.fp_number) when 1 then '未开票' when 0 then '已开票' end  as fp_status,
         (select dict_label from sys_dict_data where dict_type='pay_type' and dict_value=a.pay_type)as pay_type_name,
@@ -52,12 +52,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from cg_rkd_single a
         <where>
             1=1
+            <if test="djNumber != null  and djNumber != '' and djNumber != '-1'"> and a.dj_number like concat('%', #{djNumber}, '%')</if>
+            <if test="status==2"> and a.`status`=2 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(dj_time, INTERVAL -30 DAY),'%Y-%m-%d')</if>
 
-            <if test="_parameter==2"> and a.`status`=2 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(dj_time, INTERVAL -30 DAY),'%Y-%m-%d')</if>
+            <if test="status==1"> and (a.status=0 or a.dj_number not in(select b.dj_number from cg_rkd_single_child b join cgdd_info_child c on b.id=c.order_id GROUP BY b.dj_number)) </if>
 
-            <if test="_parameter==1"> and (a.status=0 or a.dj_number not in(select b.dj_number from cg_rkd_single_child b join cgdd_info_child c on b.id=c.order_id GROUP BY b.dj_number)) </if>
-
-            <if test="_parameter==0||_parameter==null"> and  1=2 </if>
+            <if test="status==0||status==null"> and  1=2 </if>
         </where>
         order by a.create_time desc
     </select>
@@ -80,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCgRkdBdList" parameterType="CgRkdSingle" resultMap="CgRkdSingleResult">
         <include refid="selectCgRkdBdVoByRole"/>
         <where>
-            <if test="djNumber != null  and djNumber != ''"> and dj_number = #{djNumber}</if>
+            <if test="djNumber != null  and djNumber != ''"> and dj_number like concat('%', #{djNumber}, '%') </if>
             <if test="createBy != null  and createBy != ''"> and a.create_by = #{createBy}</if>
             <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
             <if test="djTime != null  and djTime != ''"> and dj_time = #{djTime}</if>

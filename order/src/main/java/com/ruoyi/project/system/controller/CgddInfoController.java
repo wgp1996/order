@@ -104,11 +104,11 @@ public class CgddInfoController extends BaseController
     /**
      * 获取首页待办列表
      */
-    @GetMapping("/indexList/{status}")
-    public TableDataInfo indexList(@PathVariable("status") Integer status)
+    @GetMapping("/indexList/{status}/{orderNumber}")
+    public TableDataInfo indexList(@PathVariable("status") Integer status,@PathVariable("orderNumber") String orderNumber)
     {
         startPage();
-        List<CgddInfoChild> list = cgddInfoChildService.selectCgddMessageList(status);
+        List<CgddInfoChild> list = cgddInfoChildService.selectCgddMessageList(status,orderNumber);
         return getDataTable(list);
     }
     /**

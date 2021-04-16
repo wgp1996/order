@@ -47,7 +47,7 @@ public interface ICgRkdSingleService
      * @param status
      * @return
      */
-    public List<CgRkdSingle> selectOrderMessageList(Integer status);
+    public List<CgRkdSingle> selectOrderMessageList(Integer status,String djNumber);
     /**
      * 新增进货单
      * 

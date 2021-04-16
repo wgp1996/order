@@ -72,8 +72,8 @@ public class CgRkdSingleServiceImpl implements ICgRkdSingleService
      * @return
      */
     @Override
-    public List<CgRkdSingle> selectOrderMessageList(Integer status){
-        return cgRkdMapper.selectOrderMessageList(status);
+    public List<CgRkdSingle> selectOrderMessageList(Integer status,String djNumber){
+        return cgRkdMapper.selectOrderMessageList(status,djNumber);
     }
     @Override
     public int checkDjNumber(String djNumber,String id){

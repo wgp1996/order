@@ -46,7 +46,7 @@ public interface CgRkdSingleMapper
      * @param status
      * @return
      */
-    public List<CgRkdSingle> selectOrderMessageList(Integer status);
+    public List<CgRkdSingle> selectOrderMessageList(Integer status,String djNumber);
 
     public int checkDjNumber(String djNumber,String id);
 

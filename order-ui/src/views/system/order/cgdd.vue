@@ -713,7 +713,7 @@ export default {
       var date = new Date();
       var year = date.getFullYear(); //得到当前年份
       var month = this.editTime(date.getMonth() + 1); //得到当前月份
-      var day = this.editTime(date.getDate()) + 3; //得到当前几号
+      var day = this.editTime(date.getDate()); //得到当前几号
       var hour = this.editTime(date.getHours()); //得到当前小时
       var min = this.editTime(date.getMinutes()); //得到当前分钟
       var seconds = this.editTime(date.getSeconds()); //得到当前秒
@@ -742,7 +742,7 @@ export default {
           week = "星期六";
           break;
       }
-      return year + "-" + month + "-" + day;
+      return year + "-" + month + "-" + (parseInt(day)+3);
     },
     //追加子表必填样式
     starAdd(obj) {

@@ -19,6 +19,7 @@ public interface CgRkdSingleChildMapper
      * @return 进货单子表
      */
     public CgRkdSingleChild selectCgRkdSingleChildById(String id);
+    public List<CgRkdSingleChild> selectCgRkdSingleChildByNumSurplus(String dj_number);
     /**
      * 采购订单选择订单
      *

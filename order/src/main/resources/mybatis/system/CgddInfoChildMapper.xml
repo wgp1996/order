@@ -99,10 +99,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from cgdd_info_child a
         <where>
             1=1
-            <if test="_parameter==1"> and a.`rk_status`=0 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(rk_time,'%Y-%m-%d') </if>
-            <if test="_parameter==2"> and a.fp_number is  null and a.`sh_status`=0 and a.`rk_status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d') </if>
-            <if test="_parameter==3"> and a.fp_number is  null and a.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')</if>
-            <if test="_parameter==0||_parameter==null"> and  1=2 </if>
+            <if test="orderNumber != null  and orderNumber != '' and orderNumber != '-1'"> and a.order_number like concat('%', #{orderNumber}, '%')</if>
+            <if test="status==1"> and a.`rk_status`=0 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(rk_time,'%Y-%m-%d') </if>
+            <if test="status==2"> and a.fp_number is  null and a.`sh_status`=0 and a.`rk_status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(jh_time,'%Y-%m-%d') </if>
+            <if test="status==3"> and a.fp_number is  null and a.`status`=1 and  DATE_FORMAT(NOW(),'%Y-%m-%d')>DATE_FORMAT(DATE_SUB(cg_time, INTERVAL -3 DAY),'%Y-%m-%d')</if>
+            <if test="status==0||status==null"> and  1=2 </if>
         </where>
         order by a.create_time desc
     </select>

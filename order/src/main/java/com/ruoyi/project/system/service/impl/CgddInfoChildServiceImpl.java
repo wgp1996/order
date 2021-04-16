@@ -52,8 +52,8 @@ public class CgddInfoChildServiceImpl implements ICgddInfoChildService
      * @return 采购订单子表集合
      */
     @Override
-    public List<CgddInfoChild> selectCgddMessageList(Integer status){
-        return cgddInfoChildMapper.selectCgddMessageList(status);
+    public List<CgddInfoChild> selectCgddMessageList(Integer status,String orderNumber){
+        return cgddInfoChildMapper.selectCgddMessageList(status,orderNumber);
     }
     /**
      * 订单汇总

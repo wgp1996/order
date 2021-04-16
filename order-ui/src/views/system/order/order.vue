@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <el-form
+      v-if="isSurplus"
       :model="queryParams"
       ref="queryForm"
       :inline="true"
@@ -73,7 +74,7 @@
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10" class="mb8"  v-if="isSurplus">
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -476,6 +477,7 @@
 
 <script>
 import {
+  surplusListCgrkdSingle,
   listCgrkdSingle,
   getCgrkdSingle,
   getCgrkdSingleChild,
@@ -503,6 +505,7 @@ export default {
   },
   data() {
     return {
+      isSurplus:true,
       sumMoney:0,
       //用户信息
       user: {
@@ -613,26 +616,38 @@ export default {
   },
   created() {
      let djNumber=this.$route.query.djNumber;
-     if(djNumber!=""&&djNumber!=null&&djNumber!=undefined){
+     let djType=this.$route.query.djType;
+     if(djNumber!=""&&djNumber!=null&&djNumber!=undefined&&djType==1){
+        this.isSurplus=false;
         this.queryParams.djNumber=djNumber;
+        surplusListCgrkdSingle(this.queryParams).then((response) => {
+        this.leaseList = response.rows;
+        let sum = 0;
+        this.sumNum = sum.toFixed(2);
+        console.log(this.leaseList);
+        this.total = response.total;
+        this.loading = false;
+      });
+     }else{
+        this.queryParams.djNumber=djNumber;
+        this.getList();
+        this.getDicts("pay_type").then((response) => {
+          this.perationOptions = response.data;
+          this.cash = response.data[1].dictValue;
+          this.payTypes = response.data[1].dictLabel;
+          console.log(this.perationOptions);
+        });
+        let queryParams = { khType: 0 };
+        getKhList(queryParams).then((response) => {
+          this.personList = response.rows;
+        });
+        getInfo().then((response) => {
+          this.user.ownerCode = response.user.userName;
+          this.user.ownerName = response.user.nickName;
+          this.user.ownerNameJc = response.user.nickName;
+          this.form.djTime = this.getTime();
+        });
      }
-    this.getList();
-    this.getDicts("pay_type").then((response) => {
-      this.perationOptions = response.data;
-      this.cash = response.data[1].dictValue;
-      this.payTypes = response.data[1].dictLabel;
-      console.log(this.perationOptions);
-    });
-    let queryParams = { khType: 0 };
-    getKhList(queryParams).then((response) => {
-      this.personList = response.rows;
-    });
-    getInfo().then((response) => {
-      this.user.ownerCode = response.user.userName;
-      this.user.ownerName = response.user.nickName;
-      this.user.ownerNameJc = response.user.nickName;
-      this.form.djTime = this.getTime();
-    });
   },
   methods: {
     // getSummaries(param) {
