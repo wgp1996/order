@@ -137,6 +137,8 @@ public class CgddInfoChildController extends BaseController
             //已入库未交货可以修改入库日期
             if(cgddInfoChild.getRkStatus()==1&&cgddInfoChild.getShStatus()==0){
                 rkTimeChild.setRkTime(cgddInfoChild.getRkTime());
+                rkTimeChild.setShPersonName(cgddInfoChild.getShPersonName());
+                rkTimeChild.setJhTime(cgddInfoChild.getJhTime());
             }
             rkTimeChild.setRemark(cgddInfoChild.getRemark());
             cgddInfoChildService.updateCgddInfoChild(rkTimeChild);
